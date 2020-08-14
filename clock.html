@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html>
+ <head>
+  <meta charset="utf-8">
+  <title>Clock </title>
+  <style type="text/css">
+ canvas {  border:solid 0px; float:none;}
+ .content {left:50%; margin-left:-240px;display:block; position:relative; width:480px;}
+ .time {width:480px; height:100px;text-align:center;display:block; position:relative;}
+ .time b {font-size:48px;font-family: "Arial", Arial, Helvetica, sans-serif;color:#555555;}
+  
+  </style>
+ </head>
+ <body>
+	<div class="content">
+		
+		<canvas height='480' width='480' id='canva'>Не работает(</canvas>
+		<div class="time"><b id="time"> Что то пошло не так</b></div>
+	</div>
+	<script>
+	window.onload = function() {
+	(function(){"use strict";
+		let canva = document.getElementById("canva");
+		let ctx = canva.getContext('2d');
+		
+		//Частота обновления канваса
+		let SetTimeoutId = setInterval(time,100);
+		SetTimeoutId;
+		function time()	{
+		let date = new Date();
+		let sNow = date.getSeconds();
+		let mNow = date.getMinutes();
+		let hNow = date.getHours();
+			
+		//Заливка, что бы убрать предыдущие слои
+		ctx.fillStyle = '#ffffff';
+		ctx.fillRect(0, 0, 480, 480)
+		//ставим начальные координаты в центр, что бы создать циферблат и вращать стрелки 
+		ctx.translate(240, 240);
+		
+		//Круг циферблата
+		ctx.arc(0,0,200,0,2*Math.PI);
+		ctx.stroke();
+		
+			
+		//Секундная стрелка
+		ctx.fillStyle = '#ff0000';
+		ctx.rotate((sNow+30) * Math.PI / 30);	
+		ctx.translate(0, 20);
+		ctx.fillRect(-2, 0, 4, 170);
+		ctx.translate(0, -20);
+		ctx.rotate((-sNow-30) * Math.PI / 30);
+		
+		//Минутная стрелка
+		ctx.fillStyle = '#000000';
+		ctx.rotate((mNow+30) * Math.PI / 30);	
+		ctx.translate(0, 20);
+		ctx.fillRect(-3, 0, 6, 150);
+		ctx.translate(0, -20);
+		ctx.rotate((-mNow-30) * Math.PI / 30);
+		
+		//Часовая стрелка. Прибавляем минуты к часам, чтобы часовая стрелка двигалась плавно
+		ctx.rotate((hNow+mNow/60 + 6) * Math.PI / 6);	
+		ctx.translate(0, 20);
+		ctx.fillRect(-5, 0, 10, 100);
+		ctx.translate(0, -20);
+		ctx.rotate((-hNow+-mNow/60 + 6) * Math.PI / 6);
+		//Воводим часовые засечки
+		for (let i = 0; i < 12; i += 1) {
+			ctx.rotate((i+6) * Math.PI / 6);
+			ctx.translate(0, 185);
+			ctx.fillRect(-2, 0, 4, 15);
+			ctx.translate(0, -185);
+			ctx.rotate((-i-6) * Math.PI / 6);
+		}
+		//Воводим минутные засечки
+		for (let i = 0; i < 60; i += 1) {
+			ctx.rotate((i+30) * Math.PI / 30);
+			ctx.translate(0, 185);
+			ctx.fillRect(-1, 0, 2, 7);
+			ctx.translate(0, -185);
+			ctx.rotate((-i-30) * Math.PI / 30);
+		}
+		//Возвращаем координаты на место		
+		ctx.translate(-240, -240);
+		
+		//Прибавляем ноль к числу, если оно равно одному символу		
+		if (sNow.toString().length == 1){
+		sNow = "0"+sNow;
+		};
+		if (mNow.toString().length == 1){
+		mNow = "0"+mNow;
+		};
+		if (hNow.toString().length == 1){
+		hNow = "0"+hNow;
+		};
+		
+		//Вовод времени цифрами
+		document.getElementById("time").innerHTML=hNow+":"+mNow+":"+sNow;
+		}
+	 })();
+};
+
+	</script>
+  </body>
+ </html>
